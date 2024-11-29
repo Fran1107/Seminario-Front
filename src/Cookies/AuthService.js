@@ -22,8 +22,21 @@ export const AuthService = {
         return user ? JSON.parse(user).rol : null
     },
     getUser() {
-        const user = Cookies.get('user');
-        return user ? JSON.parse(user) : null;
+        const user = Cookies.get('user') // Obtiene la cookie del usuario
+        // Verifica si la cookie existe
+        if (!user) {
+            return null
+        }
+        try {
+            return JSON.parse(user) 
+        } catch (error) {
+            console.error('Error al analizar los datos del usuario:', error)
+            return null 
+        }
+    },
+    getUserCuil() {
+        const user = this.getUser() 
+        return user ? user.cli_cuil : null
     },
     login: (user, token) => {
         Cookies.set('access_token', token)
@@ -32,6 +45,9 @@ export const AuthService = {
     logout: () => {
         Cookies.remove('access_token')
         Cookies.remove('user')
-        window.location.reload();
+        window.location.href = '/' 
+        setTimeout(() => {
+            window.location.reload() 
+        }, 100) // 100 ms de retraso
     },
 }
